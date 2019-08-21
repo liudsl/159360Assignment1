@@ -84,7 +84,7 @@ function mvPushMatrix() {
 }
 
 function mvPopMatrix() {
-    if (mvMatrixStack.length == 0) {
+    if (mvMatrixStack.length === 0) {
         throw "Invalid popMatrix!";
     }
     mvMatrix = mvMatrixStack.pop();
@@ -276,9 +276,9 @@ function drawScene() {
     mvPushMatrix();
     // specify position and angle
     // matrix multiplications are left-to-right, so later operations must be applied first
-    mat4.translate(mvMatrix, [5,-3,0])
-    mat4.rotate(mvMatrix, degToRad(moonAngle), [0, 1, 0]);
-    mat4.translate(mvMatrix, [-5,3,0])
+    mat4.translate(mvMatrix, [0,3,3])
+    mat4.rotate(mvMatrix, degToRad(-moonAngle*5), [0, 1, 0]);
+    // mat4.translate(mvMatrix, [-5,3,0])
 
     gl.activeTexture(gl.TEXTURE0);
     gl.bindTexture(gl.TEXTURE_2D, moonTexture);
@@ -301,7 +301,7 @@ function drawScene() {
     // draw the earth
     mvPushMatrix();
     // specify position and angle
-    mat4.rotate(mvMatrix, degToRad(earthAngle), [0, 1, 0]);
+     mat4.rotate(mvMatrix, degToRad(earthAngle), [0, 1, 0]);
 
     gl.bindBuffer(gl.ARRAY_BUFFER, earthVertexPositionBuffer);
     gl.vertexAttribPointer(shaderProgram.vertexPositionAttribute, earthVertexPositionBuffer.itemSize, gl.FLOAT, false, 0, 0);
@@ -327,7 +327,7 @@ var lastTime = 0;
 function render() {
     var timeNow = new Date().getTime();
     drawScene();
-    if (lastTime != 0) {
+    if (lastTime !== 0) {
         var elapsed = timeNow - lastTime;
 
         moonAngle += 0.05 * elapsed;
