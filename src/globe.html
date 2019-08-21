@@ -1,0 +1,45 @@
+<html>
+
+<script type="text/javascript" src="../Common/glMatrix-0.9.5.min.js"></script>
+<script type="text/javascript" src="../Common/webgl-utils.js"></script>
+<script type="text/javascript" src="../Common/initShaders.js"></script>
+
+<script id="fragment-shader" type="x-shader/x-fragment">
+    precision mediump float;
+
+    varying vec2 vTextureCoord;
+    uniform sampler2D uSampler;
+
+    void main(void)
+    {
+        gl_FragColor = texture2D(uSampler, vec2(vTextureCoord.s, vTextureCoord.t));
+    }
+</script>
+
+<script id="vertex-shader" type="x-shader/x-vertex">
+    attribute vec3 aVertexPosition;
+    // normal vector can be used for lighting calculations
+    //attribute vec3 aVertexNormal;
+    attribute vec2 aTextureCoord;
+
+    uniform mat4 uMVMatrix;
+    uniform mat4 uPMatrix;
+
+    varying vec2 vTextureCoord;
+
+    void main(void)
+    {
+        vec4 mvPosition = uMVMatrix * vec4(aVertexPosition, 1.0);
+        gl_Position = uPMatrix * mvPosition;
+        vTextureCoord = aTextureCoord;
+    }
+</script>
+
+<script type="text/javascript" src="globe.js"></script>
+
+<body>
+    <canvas id="canvas" style="border: none;" width="500" height="500"></canvas>
+
+</body>
+
+</html>
