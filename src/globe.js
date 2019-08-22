@@ -4,13 +4,13 @@ var shaderProgram;
 
 window.onload = function init() {
     // Get A WebGL context
-    canvas = document.getElementById( "canvas" );
-    gl = WebGLUtils.setupWebGL( canvas );
-    if ( !gl ) 
-        alert( "WebGL isn't available" );
+    canvas = document.getElementById("canvas");
+    gl = WebGLUtils.setupWebGL(canvas);
+    if (!gl)
+        alert("WebGL isn't available");
 
     // setup GLSL program
-    shaderProgram = initShaders( gl, "vertex-shader", "fragment-shader" );
+    shaderProgram = initShaders(gl, "vertex-shader", "fragment-shader");
     gl.useProgram(shaderProgram);
 
     defineAttributes();
@@ -121,12 +121,12 @@ function initBuffers() {
     var vertexPositionData = [];
     var normalData = [];
     var textureCoordData = [];
-    for (var latNumber=0; latNumber <= latitude; latNumber++) {
+    for (var latNumber = 0; latNumber <= latitude; latNumber++) {
         var theta = latNumber * Math.PI / latitude;
         var sinTheta = Math.sin(theta);
         var cosTheta = Math.cos(theta);
 
-        for (var longNumber=0; longNumber <= longitude; longNumber++) {
+        for (var longNumber = 0; longNumber <= longitude; longNumber++) {
             var phi = longNumber * 2 * Math.PI / longitude;
             var sinPhi = Math.sin(phi);
             var cosPhi = Math.cos(phi);
@@ -149,8 +149,8 @@ function initBuffers() {
     }
 
     var indexData = [];
-    for (var latNumber=0; latNumber < latitude; latNumber++) {
-        for (var longNumber=0; longNumber < longitude; longNumber++) {
+    for (var latNumber = 0; latNumber < latitude; latNumber++) {
+        for (var longNumber = 0; longNumber < longitude; longNumber++) {
             var first = (latNumber * (longitude + 1)) + longNumber;
             var second = first + longitude + 1;
             indexData.push(first);
@@ -193,12 +193,12 @@ function initBuffers() {
     var vertexPositionData = [];
     var normalData = [];
     var textureCoordData = [];
-    for (var latNumber=0; latNumber <= latitude; latNumber++) {
+    for (var latNumber = 0; latNumber <= latitude; latNumber++) {
         var theta = latNumber * Math.PI / latitude;
         var sinTheta = Math.sin(theta);
         var cosTheta = Math.cos(theta);
 
-        for (var longNumber=0; longNumber <= longitude; longNumber++) {
+        for (var longNumber = 0; longNumber <= longitude; longNumber++) {
             var phi = longNumber * 2 * Math.PI / longitude;
             var sinPhi = Math.sin(phi);
             var cosPhi = Math.cos(phi);
@@ -221,8 +221,8 @@ function initBuffers() {
     }
 
     var indexData = [];
-    for (var latNumber=0; latNumber < latitude; latNumber++) {
-        for (var longNumber=0; longNumber < longitude; longNumber++) {
+    for (var latNumber = 0; latNumber < latitude; latNumber++) {
+        for (var longNumber = 0; longNumber < longitude; longNumber++) {
             var first = (latNumber * (longitude + 1)) + longNumber;
             var second = first + longitude + 1;
             indexData.push(first);
@@ -264,11 +264,13 @@ function initBuffers() {
 var moonAngle = 180;
 var earthAngle = 0;
 
+let lookat = mat4.lookAt([0,80,0], [0,-1,0], [0,0,-1]);
 function drawScene() {
     gl.viewport(0, 0, canvas.clientWidth, canvas.clientHeight);
     gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
 
     mat4.perspective(45, canvas.clientWidth / canvas.clientHeight, 0.1, 100.0, pMatrix);
+    mat4.multiply(pMatrix, lookat);
     mat4.identity(mvMatrix);
     mat4.translate(mvMatrix, [0, 0, -20]);
 
@@ -276,9 +278,18 @@ function drawScene() {
     mvPushMatrix();
     // specify position and angle
     // matrix multiplications are left-to-right, so later operations must be applied first
-    mat4.translate(mvMatrix, [0,3,3])
-    mat4.rotate(mvMatrix, degToRad(-moonAngle*5), [0, 1, 0]);
-    // mat4.translate(mvMatrix, [-5,3,0])
+    // mat4.translate(mvMatrix,[0,0,20]);
+    mat4.translate(mvMatrix,[0,0,20]);
+    mat4.rotate(mvMatrix, degToRad(earthAngle*0.8), [0, 1, 0]);
+    mat4.translate(mvMatrix, [0,0,-20]);
+    mat4.rotateZ(mvMatrix, degToRad(-30));
+    mat4.rotate(mvMatrix, degToRad(earthAngle*2), [0,1,0]);
+    mat4.rotateZ(mvMatrix, degToRad(30));
+    mat4.translate(mvMatrix, [5, -3, 0]);
+    mat4.rotate(mvMatrix, degToRad(moonAngle), [0, 1, 0]);
+    mat4.translate(mvMatrix, [-5, 3, 0]);
+
+
 
     gl.activeTexture(gl.TEXTURE0);
     gl.bindTexture(gl.TEXTURE_2D, moonTexture);
@@ -301,7 +312,11 @@ function drawScene() {
     // draw the earth
     mvPushMatrix();
     // specify position and angle
-     mat4.rotate(mvMatrix, degToRad(earthAngle), [0, 1, 0]);
+    mat4.translate(mvMatrix,[0,0,20]);
+    mat4.rotate(mvMatrix, degToRad(earthAngle*0.8), [0, 1, 0]);
+    mat4.translate(mvMatrix, [0,0,-20]);
+    mat4.rotate(mvMatrix, degToRad(earthAngle), [0, 1, 0]);
+
 
     gl.bindBuffer(gl.ARRAY_BUFFER, earthVertexPositionBuffer);
     gl.vertexAttribPointer(shaderProgram.vertexPositionAttribute, earthVertexPositionBuffer.itemSize, gl.FLOAT, false, 0, 0);
