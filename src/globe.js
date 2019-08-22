@@ -261,14 +261,28 @@ function initBuffers() {
 }
 
 
+
 var moonAngle = 180;
 var earthAngle = 0;
+let lookat = mat4.create();
+let flag=1; //toggle
+mat4.identity(lookat);
 
-let lookat = mat4.lookAt([0,80,0], [0,-1,0], [0,0,-1]);
+function ClickMe() {
+    if(flag){
+        lookat = mat4.lookAt([0,65,0], [0,-1,0], [0,0,-1]);
+        flag = 0;
+    }
+    else{
+        mat4.identity(lookat);
+        flag = 1;
+    }
+
+}
+
 function drawScene() {
     gl.viewport(0, 0, canvas.clientWidth, canvas.clientHeight);
     gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
-
     mat4.perspective(45, canvas.clientWidth / canvas.clientHeight, 0.1, 100.0, pMatrix);
     mat4.multiply(pMatrix, lookat);
     mat4.identity(mvMatrix);
