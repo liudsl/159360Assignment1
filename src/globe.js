@@ -293,12 +293,15 @@ function drawScene() {
     // specify position and angle
     // matrix multiplications are left-to-right, so later operations must be applied first
     // mat4.translate(mvMatrix,[0,0,20]);
+    //Earth revolution matrix
     mat4.translate(mvMatrix,[0,0,20]);
     mat4.rotate(mvMatrix, degToRad(earthAngle*0.8), [0, 1, 0]);
     mat4.translate(mvMatrix, [0,0,-20]);
+    //Let the moon turn around the earth
     mat4.rotateZ(mvMatrix, degToRad(-30));
     mat4.rotate(mvMatrix, degToRad(earthAngle*2), [0,1,0]);
     mat4.rotateZ(mvMatrix, degToRad(30));
+    // Let the moon autobiography
     mat4.translate(mvMatrix, [5, -3, 0]);
     mat4.rotate(mvMatrix, degToRad(moonAngle), [0, 1, 0]);
     mat4.translate(mvMatrix, [-5, 3, 0]);
@@ -326,9 +329,13 @@ function drawScene() {
     // draw the earth
     mvPushMatrix();
     // specify position and angle
+
+    //Earth revolution
     mat4.translate(mvMatrix,[0,0,20]);
     mat4.rotate(mvMatrix, degToRad(earthAngle*0.8), [0, 1, 0]);
     mat4.translate(mvMatrix, [0,0,-20]);
+
+    //Earth revolution matrix
     mat4.rotate(mvMatrix, degToRad(earthAngle), [0, 1, 0]);
 
 
